@@ -37,11 +37,21 @@ namespace ChatAsyncClient_Single
             Console.Write("Enter server IP address: ");
             string server = Console.ReadLine();
 
-            Console.Write("Enter message to send: ");
-            string message = Console.ReadLine();
+            while (true)
+            {
+                Console.Write("Enter message to send: ");
+                string message = Console.ReadLine();
 
-            Client client = new Client();
-            client.Connect(server, message);
+                if (!string.IsNullOrEmpty(message))
+                {
+                    Client client = new Client();
+                    client.Connect(server, message);
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 }
