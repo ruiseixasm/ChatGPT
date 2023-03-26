@@ -21,13 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CppWrapperClass", "CppWrapp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyWrapperClass", "MyWrapperClass\MyWrapperClass.vcxproj", "{23A7236F-1CB5-41C0-97FD-03D3FC32E173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncServer_Single", "ServeerClientChatAsync_Single\ChatAsyncServer_Single.csproj", "{0CACDE65-2836-4214-8A36-B31492CF5F4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncServer_Single", "ChatAsyncServer_Single\ChatAsyncServer_Single.csproj", "{0CACDE65-2836-4214-8A36-B31492CF5F4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncClient_Single", "ClientChatAsync_Single\ChatAsyncClient_Single.csproj", "{1D85A960-77CC-4AD6-AF76-2A876C630921}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncClient_Single", "ChatAsyncClient_Single\ChatAsyncClient_Single.csproj", "{1D85A960-77CC-4AD6-AF76-2A876C630921}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncServer_Multiple", "ChatAsyncServer_Multiple\ChatAsyncServer_Multiple.csproj", "{CAEDD82D-783B-4580-BE4C-BEC14CCA33F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAsyncServer_Multiple", "ChatAsyncServer_Multiple\ChatAsyncServer_Multiple.csproj", "{CAEDD82D-783B-4580-BE4C-BEC14CCA33F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAsyncClient_Multiple", "ChatAsyncClient_Multiple\ChatAsyncClient_Multiple.csproj", "{7F753AB9-91AB-4006-9572-CA568B188358}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAsyncClient_Multiple", "ChatAsyncClient_Multiple\ChatAsyncClient_Multiple.csproj", "{7F753AB9-91AB-4006-9572-CA568B188358}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
