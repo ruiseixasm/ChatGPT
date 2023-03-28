@@ -30,10 +30,18 @@ namespace ChatAsyncClient_Multiple
                 Console.Write("Enter message: ");
                 string message = Console.ReadLine();
 
-                outStream = Encoding.ASCII.GetBytes(message + "$");
-                serverStream.Write(outStream, 0, outStream.Length);
-                serverStream.Flush();
+                if (!string.IsNullOrEmpty(message))
+                {
+                    outStream = Encoding.ASCII.GetBytes(message + "$");
+                    serverStream.Write(outStream, 0, outStream.Length);
+                    serverStream.Flush();
+                }
+                else
+                {
+                    break;
+                }
             }
+            CloseConnection();
         }
 
         static void GetServerResponse()
@@ -54,6 +62,15 @@ namespace ChatAsyncClient_Multiple
                     Console.WriteLine(ex.ToString());
                 }
             }
+        }
+
+        static void CloseConnection()
+        {
+            byte[] data = Encoding.Unicode.GetBytes("exit");
+            serverStream.Write(data, 0, data.Length);
+            serverStream.Close();
+            serverStream.Close();
+            Environment.Exit(0);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace ChatAsyncClient_Single
                 int bytesRead = stream.Read(response, 0, 4096);
                 Console.WriteLine(Encoding.ASCII.GetString(response, 0, bytesRead));
 
+                // Closing connection
+                stream.Close();
                 client.Close();
             }
             catch (Exception ex)
@@ -37,11 +39,23 @@ namespace ChatAsyncClient_Single
             Console.Write("Enter server IP address: ");
             string server = Console.ReadLine();
 
-            Console.Write("Enter message to send: ");
-            string message = Console.ReadLine();
+            while (true)
+            {
+                Console.Write("Enter message to send: ");
+                string message = Console.ReadLine();
 
-            Client client = new Client();
-            client.Connect(server, message);
+                if (!string.IsNullOrEmpty(message))
+                {
+                    Client client = new Client();
+                    client.Connect(server, message); // Local Method!
+                }
+                else
+                {
+                    Client client = new Client();
+                    client.Connect(server, "Bye!"); // Local Method!
+                    break;
+                }
+            }
         }
     }
 }
