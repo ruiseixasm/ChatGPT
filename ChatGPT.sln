@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAsyncServer_Multiple", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAsyncClient_Multiple", "ChatAsyncClient_Multiple\ChatAsyncClient_Multiple.csproj", "{7F753AB9-91AB-4006-9572-CA568B188358}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanningPort80", "ScanningPort80\ScanningPort80.csproj", "{E5C4CAE5-D314-4EAE-A6C5-2294418EB567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanningPort80", "ScanningPort80\ScanningPort80.csproj", "{E5C4CAE5-D314-4EAE-A6C5-2294418EB567}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPsScanner", "IPsScanner\IPsScanner.csproj", "{DF3BCF59-1294-4154-983C-9F39C7D3618F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -207,6 +209,18 @@ Global
 		{E5C4CAE5-D314-4EAE-A6C5-2294418EB567}.Release|x64.Build.0 = Release|Any CPU
 		{E5C4CAE5-D314-4EAE-A6C5-2294418EB567}.Release|x86.ActiveCfg = Release|Any CPU
 		{E5C4CAE5-D314-4EAE-A6C5-2294418EB567}.Release|x86.Build.0 = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|x64.Build.0 = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Debug|x86.Build.0 = Debug|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x64.ActiveCfg = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x64.Build.0 = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x86.ActiveCfg = Release|Any CPU
+		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

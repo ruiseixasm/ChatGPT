@@ -9,8 +9,14 @@ namespace ScanningPort80
 {
     class Program
     {
+        static int port = 80;
+        static List<UInt32> scannedNetworkAddresses = new List<UInt32>();
+
         static void Main(string[] args)
         {
+            Console.WriteLine("Starting Scanner!\n");
+
+
             // Get the local IP address and subnet mask
             IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
             IPAddress subnetMask = IPAddress.None;
@@ -18,93 +24,167 @@ namespace ScanningPort80
             {
                 if (adapter.OperationalStatus == OperationalStatus.Up && adapter.Supports(NetworkInterfaceComponent.IPv4))
                 {
-                    foreach (UnicastIPAddressInformation ip in adapter.GetIPProperties().UnicastAddresses)
+                    foreach (UnicastIPAddressInformation local_ip in adapter.GetIPProperties().UnicastAddresses)
                     {
-                        if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                        if (local_ip.Address.AddressFamily == AddressFamily.InterNetwork)
                         {
-                            foreach (var address in localIPs)
+                            subnetMask = local_ip.IPv4Mask;
+                            byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
+                            if (subnetMaskBytes[1] == 255)
                             {
-                                if (address.Equals(ip.Address))
-                                {
-                                    subnetMask = ip.IPv4Mask;
-                                    break;
-                                }
-                            }
-                            if (!subnetMask.Equals(IPAddress.None))
-                            {
-                                break;
+                                ScanLocalIPs(local_ip.Address.GetAddressBytes(), subnetMaskBytes);
                             }
                         }
                     }
-                    if (!subnetMask.Equals(IPAddress.None))
-                    {
-                        break;
-                    }
                 }
-            }
-
-            // Calculate the number of possible IP addresses
-            byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
-            int numZeros = 0;
-            for (int i = 0; i < subnetMaskBytes.Length; i++)
-            {
-                byte maskByte = subnetMaskBytes[i];
-                for (int j = 7; j >= 0; j--)
-                {
-                    if ((maskByte & (1 << j)) == 0)
-                    {
-                        numZeros++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            int numAddresses = (int)Math.Pow(2, numZeros) - 2;
-
-            // Scan all possible IP addresses
-            List<string> availableIPs = new List<string>();
-            for (int i = 1; i <= numAddresses; i++)
-            {
-                string ip = GetIPFromIndex(i, subnetMask);
-                Console.Write($"Scanning {ip}... ");
-                using (TcpClient tcpClient = new TcpClient())
-                {
-                    try
-                    {
-                        tcpClient.Connect(ip, 80);
-                        Console.WriteLine("Available");
-                        availableIPs.Add(ip);
-                    }
-                    catch (SocketException)
-                    {
-                        Console.WriteLine("Unavailable");
-                    }
-                }
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Available IP addresses:");
-            foreach (string ip in availableIPs)
-            {
-                Console.WriteLine(ip);
             }
         }
 
-        static string GetIPFromIndex(int index, IPAddress subnetMask)
+        public static void ScanLocalIPs(byte[] localAddressBytes, byte[] subnetMaskBytes)
         {
-            byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
-            byte[] indexBytes = BitConverter.GetBytes(index);
-            byte[] ipAddressBytes = new byte[4];
-            // NEED TO CONSIDER LOACL IP ADDRESS!!!
-            for (int i = 0; i < 4; i++)
+            Array.Reverse(localAddressBytes);
+            Array.Reverse(subnetMaskBytes);
+            UInt32 localAddress = BitConverter.ToUInt32(localAddressBytes, 0);
+            UInt32 subnetMask = BitConverter.ToUInt32(subnetMaskBytes, 0);
+
+            UInt32 first_address = localAddress & subnetMask;
+            UInt32 last_address = localAddress | ~subnetMask;
+
+            if (!scannedNetworkAddresses.Contains(first_address))
             {
-                ipAddressBytes[i] = (byte)(indexBytes[i] & subnetMaskBytes[i]);
+                scannedNetworkAddresses.Add(first_address);
+
+                for (UInt32 scan_ip = first_address + 1; scan_ip < last_address; scan_ip++)
+                {
+                    byte[] scannedAddressBytes = BitConverter.GetBytes(scan_ip);
+                    Array.Reverse(scannedAddressBytes);
+                    IPAddress destinationAddress = new IPAddress(scannedAddressBytes);
+
+                    string ip = destinationAddress.ToString();
+                    Console.Write($"{ip}:{port}");
+
+                    using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                    {
+                        // set the socket options
+                        socket.ReceiveTimeout = 50;
+                        socket.SendTimeout = 50;
+
+                        try
+                        {
+                            socket.Connect(new IPEndPoint(destinationAddress, port));
+                            //tcpClient.Connect(ip, port);
+                            Console.Write(" AVAILABLE\n");
+                        }
+                        catch (SocketException)
+                        {
+                            Console.Write(" Unavailable\n");
+                        }
+                    }
+                }
             }
-            return new IPAddress(ipAddressBytes).ToString();
         }
     }
+
+
+
+    //class Program
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        // Get the local IP address and subnet mask
+    //        IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+    //        IPAddress subnetMask = IPAddress.None;
+    //        foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces())
+    //        {
+    //            if (adapter.OperationalStatus == OperationalStatus.Up && adapter.Supports(NetworkInterfaceComponent.IPv4))
+    //            {
+    //                foreach (UnicastIPAddressInformation ip in adapter.GetIPProperties().UnicastAddresses)
+    //                {
+    //                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+    //                    {
+    //                        foreach (var address in localIPs)
+    //                        {
+    //                            if (address.Equals(ip.Address))
+    //                            {
+    //                                subnetMask = ip.IPv4Mask;
+    //                                break;
+    //                            }
+    //                        }
+    //                        if (!subnetMask.Equals(IPAddress.None))
+    //                        {
+    //                            break;
+    //                        }
+    //                    }
+    //                }
+    //                if (!subnetMask.Equals(IPAddress.None))
+    //                {
+    //                    break;
+    //                }
+    //            }
+    //        }
+
+    //        // Calculate the number of possible IP addresses
+    //        byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
+    //        int numZeros = 0;
+    //        for (int i = 0; i < subnetMaskBytes.Length; i++)
+    //        {
+    //            byte maskByte = subnetMaskBytes[i];
+    //            for (int j = 7; j >= 0; j--)
+    //            {
+    //                if ((maskByte & (1 << j)) == 0)
+    //                {
+    //                    numZeros++;
+    //                }
+    //                else
+    //                {
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        int numAddresses = (int)Math.Pow(2, numZeros) - 2;
+
+    //        // Scan all possible IP addresses
+    //        List<string> availableIPs = new List<string>();
+    //        for (int i = 1; i <= numAddresses; i++)
+    //        {
+    //            string ip = GetIPFromIndex(i, subnetMask);
+    //            Console.Write($"Scanning {ip}... ");
+    //            using (TcpClient tcpClient = new TcpClient())
+    //            {
+    //                try
+    //                {
+    //                    tcpClient.Connect(ip, 80);
+    //                    Console.WriteLine("Available");
+    //                    availableIPs.Add(ip);
+    //                }
+    //                catch (SocketException)
+    //                {
+    //                    Console.WriteLine("Unavailable");
+    //                }
+    //            }
+    //        }
+
+    //        Console.WriteLine();
+    //        Console.WriteLine("Available IP addresses:");
+    //        foreach (string ip in availableIPs)
+    //        {
+    //            Console.WriteLine(ip);
+    //        }
+    //    }
+
+    //    static string GetIPFromIndex(int index, IPAddress subnetMask)
+    //    {
+    //        byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
+    //        byte[] indexBytes = BitConverter.GetBytes(index);
+    //        byte[] ipAddressBytes = new byte[4];
+    //        // NEED TO CONSIDER LOACL IP ADDRESS!!!
+    //        for (int i = 0; i < 4; i++)
+    //        {
+    //            ipAddressBytes[i] = (byte)(indexBytes[i] & subnetMaskBytes[i]);
+    //        }
+    //        return new IPAddress(ipAddressBytes).ToString();
+    //    }
+    //}
 
 
 
