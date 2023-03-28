@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanningPort80", "ScanningP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPsScanner", "IPsScanner\IPsScanner.csproj", "{DF3BCF59-1294-4154-983C-9F39C7D3618F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePortScanner_Web", "SimplePortScanner_Web\SimplePortScanner_Web.csproj", "{99FEE266-AD66-4056-9F05-07D0BF89D3CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +223,18 @@ Global
 		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x64.Build.0 = Release|Any CPU
 		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF3BCF59-1294-4154-983C-9F39C7D3618F}.Release|x86.Build.0 = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Debug|x86.Build.0 = Debug|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|x64.Build.0 = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{99FEE266-AD66-4056-9F05-07D0BF89D3CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -66,8 +66,10 @@ namespace ScanningPort80
                     using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
                     {
                         // set the socket options
-                        socket.ReceiveTimeout = 50;
-                        socket.SendTimeout = 50;
+                        socket.ReceiveTimeout = 500;
+                        socket.SendTimeout = 500;
+                        socket.LingerState = new LingerOption(true, 1);
+                        //socket.Blocking = false;
 
                         try
                         {
