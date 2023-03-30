@@ -5,16 +5,16 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Collections.Generic;
 
-namespace NetworkCommunication
+namespace LibraryNetworkCommunication
 {
-    public class LocalNetwork
+    public class NetworkCommunication
     {
         private static int communicationPort = 3108;
         private static UdpClient listener = new UdpClient(communicationPort);
         private static Socket socketBroadcast = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); // Create the socket
         private static Dictionary<string, IPAddress> localNetworkAddresses = new Dictionary<string, IPAddress>();
 
-        public LocalNetwork()
+        public NetworkCommunication()
         {
             socketBroadcast.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
         }
@@ -125,11 +125,11 @@ namespace NetworkCommunication
             Array.Reverse(localAddressBytes);
             Array.Reverse(subnetMaskBytes);
 
-            UInt32 localAddressInt = BitConverter.ToUInt32(localAddressBytes, 0);
-            UInt32 subnetMaskInt = BitConverter.ToUInt32(subnetMaskBytes, 0);
+            uint localAddressInt = BitConverter.ToUInt32(localAddressBytes, 0);
+            uint subnetMaskInt = BitConverter.ToUInt32(subnetMaskBytes, 0);
 
-            UInt32 first_address = localAddressInt & subnetMaskInt; // Network Address
-            UInt32 last_address = localAddressInt | ~subnetMaskInt; // Broadcast Address
+            uint first_address = localAddressInt & subnetMaskInt; // Network Address
+            uint last_address = localAddressInt | ~subnetMaskInt; // Broadcast Address
 
             byte[] broadcastAddressBytes = BitConverter.GetBytes(last_address);
             Array.Reverse(broadcastAddressBytes);

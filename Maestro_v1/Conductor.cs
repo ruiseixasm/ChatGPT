@@ -1,4 +1,5 @@
 ﻿using System;
+using LibraryNetworkCommunication;
 
 namespace Maestro_v1
 {
@@ -6,7 +7,9 @@ namespace Maestro_v1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // Send a total Recall
+            NetworkCommunication localNetwork = new NetworkCommunication();
+            localNetwork.RecallAddresses();
         }
     }
 }
