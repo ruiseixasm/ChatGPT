@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LibraryCommandProcessor\LibraryCommandProcessor.csproj" />
+    <ProjectReference Include="..\LibraryNetworkCommunication\LibraryNetworkCommunication.csproj" />
     <ProjectReference Include="..\NetworkCommunication\LibraryNetworkCommunication.csproj" />
   </ItemGroup>
 
