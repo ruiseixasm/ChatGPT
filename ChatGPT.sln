@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPsScanner", "IPsScanner\IP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePortScanner_Web", "SimplePortScanner_Web\SimplePortScanner_Web.csproj", "{99FEE266-AD66-4056-9F05-07D0BF89D3CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkUDP_BroadcastReceiver", "NetworkUDP_BroadcastReceiver\NetworkUDP_BroadcastReceiver.csproj", "{0910ECDE-3469-45F2-8B72-C05A2DAE49A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkUDP_BroadcastReceiver", "NetworkUDP_BroadcastReceiver\NetworkUDP_BroadcastReceiver.csproj", "{0910ECDE-3469-45F2-8B72-C05A2DAE49A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkUDP_BroadcastSender", "NetworkUDP_BroadcastSender\NetworkUDP_BroadcastSender.csproj", "{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkUDP_BroadcastSender", "NetworkUDP_BroadcastSender\NetworkUDP_BroadcastSender.csproj", "{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maestro_v1", "Maestro_v1\Maestro_v1.csproj", "{6BA32655-6680-4A04-8451-0F548B7FE544}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -263,6 +265,18 @@ Global
 		{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}.Release|x64.Build.0 = Release|Any CPU
 		{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}.Release|x86.ActiveCfg = Release|Any CPU
 		{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}.Release|x86.Build.0 = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|x64.Build.0 = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Debug|x86.Build.0 = Debug|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|x64.ActiveCfg = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|x64.Build.0 = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|x86.ActiveCfg = Release|Any CPU
+		{6BA32655-6680-4A04-8451-0F548B7FE544}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
