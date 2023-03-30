@@ -43,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maestro_v1", "Maestro_v1\Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryNetworkCommunication", "LibraryNetworkCommunication\LibraryNetworkCommunication.csproj", "{A880F7DF-350C-401A-8B41-9202B81A42CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCommandProcessor", "LibraryCommandProcessor\LibraryCommandProcessor.csproj", "{B2A46174-9CD0-453F-870A-40256D41B134}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCommandProcessor", "LibraryCommandProcessor\LibraryCommandProcessor.csproj", "{B2A46174-9CD0-453F-870A-40256D41B134}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryConsoleInterface", "LibraryConsoleInterface\LibraryConsoleInterface.csproj", "{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -305,6 +307,18 @@ Global
 		{B2A46174-9CD0-453F-870A-40256D41B134}.Release|x64.Build.0 = Release|Any CPU
 		{B2A46174-9CD0-453F-870A-40256D41B134}.Release|x86.ActiveCfg = Release|Any CPU
 		{B2A46174-9CD0-453F-870A-40256D41B134}.Release|x86.Build.0 = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|x64.Build.0 = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Debug|x86.Build.0 = Debug|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x64.ActiveCfg = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x64.Build.0 = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x86.ActiveCfg = Release|Any CPU
+		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

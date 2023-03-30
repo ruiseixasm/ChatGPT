@@ -1,5 +1,7 @@
 ﻿using System;
 using LibraryNetworkCommunication;
+using LibraryCommandProcessor;
+using LibraryConsoleInterface;
 
 namespace Maestro_v1
 {
