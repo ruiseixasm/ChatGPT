@@ -19,6 +19,16 @@ namespace LibraryNetworkCommunication
             socketBroadcast.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
         }
 
+        public static List<string> GetNetworkNames()
+        {
+            List<string> networkNames = new List<string>();
+            foreach (KeyValuePair<string, IPAddress> networkAddress in localNetworkAddresses)
+            {
+                networkNames.Add(networkAddress.Key);
+            }
+            return networkNames;
+        }
+
         public bool SendString(string[] sendString)
         {
             if (sendString.Length == 1)
@@ -42,7 +52,7 @@ namespace LibraryNetworkCommunication
         {
             Tuple<string, IPAddress> message = ReceiveMessage();
 
-            if (message != null)
+            if (message != null && !string.IsNullOrEmpty(message.Item1))
             {
 
                 string[] words = message.Item1.Split(' ');
@@ -135,25 +145,6 @@ namespace LibraryNetworkCommunication
             Array.Reverse(broadcastAddressBytes);
 
             return new IPAddress(broadcastAddressBytes);
-        }
-
-        private static ushort TextCRC16(string textString)
-        {
-            char[] text = textString.ToCharArray();
-            int length = textString.Length;
-            const uint polynomial = 0x1021;
-            uint crc = 0xFFFF;
-
-            for (int i = 0; i < length; i++)
-            {
-                crc ^= (uint)text[i] << 8;
-                for (byte j = 0; j < 8; j++)
-                {
-                    crc = (crc & 0x8000) != 0 ? crc << 1 ^ polynomial : crc << 1;
-                }
-            }
-
-            return (ushort)crc;
         }
     }
 }
