@@ -39,9 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkUDP_BroadcastReceive
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkUDP_BroadcastSender", "NetworkUDP_BroadcastSender\NetworkUDP_BroadcastSender.csproj", "{1E5B4F1B-321A-43FB-AD71-F4BBF1DA4A99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maestro_v1", "Maestro_v1\Maestro_v1.csproj", "{6BA32655-6680-4A04-8451-0F548B7FE544}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maestro_v1", "Maestro_v1\Maestro_v1.csproj", "{6BA32655-6680-4A04-8451-0F548B7FE544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRC16_StringChecksum", "CRC16_StringChecksum\CRC16_StringChecksum.csproj", "{A880F7DF-350C-401A-8B41-9202B81A42CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkInterface", "CRC16_StringChecksum\NetworkInterface.csproj", "{A880F7DF-350C-401A-8B41-9202B81A42CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
