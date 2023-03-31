@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -10,24 +11,116 @@ namespace LibraryCommandProcessor
 {
     public class CommandProcessor
     {
-        private static bool lockedInput = false;
+        private static string localDevice;
         private static ConsoleInterface consoleInterface = new ConsoleInterface();
         private static NetworkCommunication localNetwork = new NetworkCommunication();
+        private static Dictionary<string, deviceStateData> devicesControlData = new Dictionary<string, deviceStateData>();
         private static Thread clientThread = new Thread(ReadNetworkCommands);
-        private static Dictionary<string, string> lastCommands = new Dictionary<string, string>();
-        private static Dictionary<string, string> commandsChecksum = new Dictionary<string, string>();
 
-        public CommandProcessor()
+        public CommandProcessor(string localDevice)
         {
             clientThread.Start();
+            CommandProcessor.localDevice = localDevice;
+        }
+
+        public class deviceStateData
+        {
+            private int addedDeviceAt;
+            private int addedLastCommandAt;
+            private string lastCommand;
+            private string lastChecksum;
+
+            public string LastCommand { get { return lastCommand; } }
+            public string LastChecksum { get { return lastChecksum; } }
+
+            public deviceStateData()
+            {
+                addedDeviceAt = Environment.TickCount;
+                lastCommand = null;
+                foreach (KeyValuePair<string, deviceStateData> deviceData in devicesControlData)
+                {
+                    if (deviceData.Value.outdatedDevice())
+                    {
+                        localNetwork.DropRemoteDevice(deviceData.Key);
+                        devicesControlData.Remove(deviceData.Key);
+                    }
+                }
+            }
+
+            public bool outdatedDevice()
+            {
+                return ((uint)(Environment.TickCount - addedDeviceAt) > 12*60*60*1000);
+            }
+
+            public bool validCommand(string checksum)
+            {
+                return (lastCommand != null && lastChecksum == checksum);
+            }
+
+            public void setLastCommand (string command)
+            {
+                lastCommand = command;
+                lastChecksum = string.Format("{0:X}", TextCRC16(command));
+                addedLastCommandAt = Environment.TickCount;
+            }
+
+            public void resetLastCommand()
+            {
+                lastCommand = null;
+            }
+
+            private static ushort TextCRC16(string textString)
+            {
+                char[] text = textString.ToCharArray();
+                int length = textString.Length;
+                const uint polynomial = 0x1021;
+                uint crc = 0xFFFF;
+
+                for (int i = 0; i < length; i++)
+                {
+                    crc ^= (uint)text[i] << 8;
+                    for (byte j = 0; j < 8; j++)
+                    {
+                        crc = (crc & 0x8000) != 0 ? crc << 1 ^ polynomial : crc << 1;
+                    }
+                }
+
+                return (ushort)crc;
+            }
+
+            public override string ToString() 
+            {
+                return lastCommand != null ? lastCommand : "";
+            }
+        }
+
+        private static bool checkDeviceStateData(string device)
+        {
+            if (!devicesControlData.ContainsKey(device))
+            {
+                devicesControlData[device] = new deviceStateData();
+                return false;
+            }
+
+            return true;
         }
 
         public static bool ReadEnteredCommands()
         {
-            if (!lockedInput)
+            string command = consoleInterface.ReadCommand();
+            if (command != null)
             {
-                string command = CleanCommand(consoleInterface.ReadCommand());
+                command = CleanCommand(command);
                 string[] words = command.Split(' ');
+                string remoteDevice = words[words.Length - 1];
+
+                if (!IsACommand(remoteDevice))
+                {
+                    if (!devicesControlData.ContainsKey(remoteDevice))
+                    {
+                        remoteDevice = null; // TO BE REVIEWED
+                    }
+                }
 
                 words[0] = words[0].ToLower();
 
@@ -36,24 +129,17 @@ namespace LibraryCommandProcessor
                     List<string> networkNames = NetworkCommunication.GetNetworkNames();
                     foreach (string name in networkNames)
                     {
-                        Console.WriteLine(name);
+                        consoleInterface.WriteInterface(name);
                     }
-                }
-                else if (words[0] == "recall")
-                {
-                    localNetwork.RecallAddresses();
-                }
-                else if (words[0] == "get")
-                {
-                    if (words.Length > 1 && words[1] == "manifesto")
-                    {
-                        lockedInput = true;
-
-                    }
+                    consoleInterface.allowInterfaceRead();
                 }
                 else if (words[0] == "exit")
                 {
                     return false;
+                }
+                else if (IsACommand(words[0]))
+                {
+                    localNetwork.SendCommand(command, localDevice, remoteDevice);
                 }
             }
             return true;
@@ -61,36 +147,44 @@ namespace LibraryCommandProcessor
 
         private static void ReadNetworkCommands()
         {
-            string[] command = localNetwork.ReceiveString();
-            if (command != null && command.Length == 2)
+            NetworkCommunication.NetworkCommand commandData = localNetwork.ReceiveCommand();
+            if (commandData != null)
             {
-                command[0] = CleanCommand(command[0]);
-                string[] words = command[0].Split(' ');
-                if (words[0] != "checksum")
-                {
-                    lastCommands[command[1]] = command[0];
-                    commandsChecksum[command[1]] = string.Format("{0:X}", TextCRC16(command[0]));
-                    string[] sendString = { $"checksum {commandsChecksum[command[1]]}", command[1] };
-                    localNetwork.SendString(sendString);
-                }
-                else if (!string.IsNullOrEmpty(lastCommands[command[1]]) && command[0] == "checksum" && lockedInput == true)
-                {
-                    if (commandsChecksum[command[1]] == words[1])
-                    {
-                        string[] last_words = lastCommands[command[1]].Split(' ');
+                string command = commandData.Command;
+                string remoteDevice = commandData.RemoteDevice;
+                string[] words = command.Split(' ');
+                checkDeviceStateData(remoteDevice); // makes sure there is a data class
 
-                        if (words[0] == "manifesto")
+                if (words[0] != "checksum") // common command to be registed NOT triggered
+                {
+                    devicesControlData[remoteDevice].setLastCommand(command);
+                }
+                else if (words.Length == 2) // triggered commands by checksum command
+                {
+                    string checksum = devicesControlData[remoteDevice].LastChecksum;
+
+                    if (devicesControlData[remoteDevice].validCommand(words[1]))
+                    {
+                        string[] lastWords = devicesControlData[remoteDevice].LastCommand.Split(' ');
+
+                        if (lastWords[0] == "manifesto")
                         {
-                            Console.Write($"{command[1]} Manifesto:");
+                            consoleInterface.WriteInterface($"{remoteDevice} Manifesto:");
                             for (uint i = 1; i < words.Length; i++)
                             {
-                                Console.Write($" {words[i]}");
+                                consoleInterface.WriteInterface($" {words[i]}");
                             }
-                            Console.WriteLine("");
+                            consoleInterface.WriteInterface("\n");
+                            consoleInterface.allowInterfaceRead();
                         }
+                        command = $"ok {checksum}";
                     }
-                    lockedInput = false;
-                    lastCommands[command[1]] = null;
+                    else
+                    {
+                        command = $"fail {checksum}";
+                    }
+                    localNetwork.SendCommand(command, localDevice, remoteDevice); // send my checksum in response to remote checksum (pair)
+                    devicesControlData[remoteDevice].resetLastCommand();
                 }
             }
         }
@@ -101,23 +195,13 @@ namespace LibraryCommandProcessor
             return command;
         }
 
-        private static ushort TextCRC16(string textString)
+        private static bool IsACommand (string word)
         {
-            char[] text = textString.ToCharArray();
-            int length = textString.Length;
-            const uint polynomial = 0x1021;
-            uint crc = 0xFFFF;
-
-            for (int i = 0; i < length; i++)
+            if (word == "reveal" || word == "manifesto" || word == "get")
             {
-                crc ^= (uint)text[i] << 8;
-                for (byte j = 0; j < 8; j++)
-                {
-                    crc = (crc & 0x8000) != 0 ? crc << 1 ^ polynomial : crc << 1;
-                }
+                return true;
             }
-
-            return (ushort)crc;
+            return false;
         }
     }
 }

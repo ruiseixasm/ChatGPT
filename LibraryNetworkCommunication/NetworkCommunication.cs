@@ -3,16 +3,42 @@ using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace LibraryNetworkCommunication
 {
     public class NetworkCommunication
     {
+        public class NetworkCommand
+        {
+            public string Command { get; set; }
+            public string LocalDevice { get; set; }
+            public string RemoteDevice { get; set; }
+            public IPAddress RemoteAddress { get; set; }
+
+            public Dictionary<string, IPAddress> ThisSomething = localNetworkAddresses;
+
+            public NetworkCommand (string command, string localDevice, string remoteDevice)
+            {
+                Command = command;
+                LocalDevice = localDevice;
+                RemoteDevice = remoteDevice;
+                if (remoteDevice != null && localNetworkAddresses.ContainsKey(RemoteDevice))
+                {
+                    RemoteAddress = localNetworkAddresses[RemoteDevice];
+                }
+                else
+                {
+                    RemoteAddress = null;
+                }
+            }
+        }
+
         private static int communicationPort = 3108;
         private static UdpClient listener = new UdpClient(communicationPort);
         private static Socket socketBroadcast = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); // Create the socket
-        private static Dictionary<string, IPAddress> localNetworkAddresses = new Dictionary<string, IPAddress>();
+        protected static Dictionary<string, IPAddress> localNetworkAddresses = new Dictionary<string, IPAddress>();
 
         public NetworkCommunication()
         {
@@ -29,47 +55,25 @@ namespace LibraryNetworkCommunication
             return networkNames;
         }
 
-        public bool SendString(string[] sendString)
+        public void SendCommand(string command, string localDevice, string remoteDevice)
         {
-            if (sendString.Length == 1)
+            NetworkCommand networkCommand = new NetworkCommand(command, localDevice, remoteDevice);
+            if (remoteDevice == null)
             {
-                if (sendString[0] == "recall")
-                {
-                    RecallAddresses();
-                    return true;
-                }
+                BroadcastNetworkCommand(networkCommand);
             }
             else
             {
-                var message = new Tuple<string, IPAddress>(sendString[0], localNetworkAddresses[sendString[1]]);
-                SendMessage(message);
-                return true;
+                SendNetworkCommand(networkCommand);
             }
-            return false;
         }
 
-        public string[] ReceiveString()
+        public NetworkCommand ReceiveCommand()
         {
-            Tuple<string, IPAddress> message = ReceiveMessage();
-
-            if (message != null && !string.IsNullOrEmpty(message.Item1))
-            {
-
-                string[] words = message.Item1.Split(' ');
-
-                if (words.Length == 1) // just the name means new regist
-                {
-                    localNetworkAddresses[words[0]] = message.Item2;
-                }
-
-                string[] result = { message.Item1, words[0] };
-                return result;
-            }
-
-            return null;
+            return ReceiveNetworkCommand();
         }
 
-        public void RecallAddresses()
+        private void BroadcastNetworkCommand(NetworkCommand networkCommand)
         {
             List<IPAddress> broadcastAddresses = new List<IPAddress>();
 
@@ -88,12 +92,12 @@ namespace LibraryNetworkCommunication
                             byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
                             if (subnetMaskBytes[1] == 255 || true) // Avoids 127.0.0.1 addresses!
                             {
-                                IPAddress broadcastAddress = BroadcastAddress(local_ip.Address, subnetMask);
-                                if (!broadcastAddresses.Contains(broadcastAddress))
+
+                                networkCommand.RemoteAddress = BroadcastAddress(local_ip.Address, subnetMask);
+                                if (!broadcastAddresses.Contains(networkCommand.RemoteAddress))
                                 {
-                                    var message = new Tuple<string, IPAddress>("Recall", broadcastAddress);
-                                    SendMessage(message);
-                                    broadcastAddresses.Add(broadcastAddress);
+                                    SendNetworkCommand(networkCommand);
+                                    broadcastAddresses.Add(networkCommand.RemoteAddress);
                                 }
                             }
                         }
@@ -102,7 +106,7 @@ namespace LibraryNetworkCommunication
             }
         }
 
-        private Tuple<string, IPAddress> ReceiveMessage()
+        private NetworkCommand ReceiveNetworkCommand()
         {
             try
             {
@@ -110,8 +114,11 @@ namespace LibraryNetworkCommunication
                 IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, communicationPort);
                 byte[] bytes = listener.Receive(ref groupEP);
                 string message = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-
-                return Tuple.Create(message, groupEP.Address);
+                message = Regex.Replace(message, @"\s+", " ");
+                string command = Regex.Replace(message, "^[^ ]+ ", "");
+                string remoteDevice = Regex.Replace(message, " .*", "");
+                localNetworkAddresses[remoteDevice] = groupEP.Address;
+                return new NetworkCommand(command, null, remoteDevice);
             }
             catch (Exception e)
             {
@@ -120,11 +127,12 @@ namespace LibraryNetworkCommunication
             }
         }
 
-        private void SendMessage(Tuple<string, IPAddress> message)
+        private void SendNetworkCommand(NetworkCommand networkCommand)
         {
-            byte[] buffer = Encoding.ASCII.GetBytes(message.Item1);
+            string command = $"{networkCommand.LocalDevice} {networkCommand.Command}";
+            byte[] buffer = Encoding.ASCII.GetBytes(command);
             // Create the endpoint for broadcasting to the specified address and port
-            IPEndPoint endPoint = new IPEndPoint(message.Item2, communicationPort);
+            IPEndPoint endPoint = new IPEndPoint(networkCommand.RemoteAddress, communicationPort);
             socketBroadcast.SendTo(buffer, endPoint); // Broadcast or Unicast the message
         }
 
@@ -145,6 +153,16 @@ namespace LibraryNetworkCommunication
             Array.Reverse(broadcastAddressBytes);
 
             return new IPAddress(broadcastAddressBytes);
+        }
+
+        public bool DropRemoteDevice (string remoteDevice)
+        {
+            if (localNetworkAddresses.ContainsKey(remoteDevice))
+            {
+                localNetworkAddresses.Remove(remoteDevice);
+                return true;
+            }
+            return false;
         }
     }
 }
