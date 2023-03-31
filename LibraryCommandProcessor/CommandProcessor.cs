@@ -26,17 +26,20 @@ namespace LibraryCommandProcessor
         public class deviceStateData
         {
             private int addedDeviceAt;
-            private int addedLastCommandAt;
-            private string lastCommand;
-            private string lastChecksum;
+            private string lastReceivedCommand;
+            private string lastReceivedChecksum;
+            private string lastSentCommand;
+            private string lastSentChecksum;
 
-            public string LastCommand { get { return lastCommand; } }
-            public string LastChecksum { get { return lastChecksum; } }
+            public string LastReceivedCommand { get { return lastReceivedCommand; } }
+            public string LastReceivedChecksum { get { return lastReceivedChecksum; } }
+            public string LastSentCommand { get { return lastSentCommand; } }
+            public string LastSentChecksum { get { return lastSentChecksum; } }
 
             public deviceStateData()
             {
                 addedDeviceAt = Environment.TickCount;
-                lastCommand = null;
+                lastReceivedCommand = null;
                 foreach (KeyValuePair<string, deviceStateData> deviceData in devicesControlData)
                 {
                     if (deviceData.Value.outdatedDevice())
@@ -54,19 +57,24 @@ namespace LibraryCommandProcessor
 
             public bool validCommand(string checksum)
             {
-                return (lastCommand != null && lastChecksum == checksum);
+                return (lastReceivedCommand != null && lastReceivedChecksum == checksum);
             }
 
-            public void setLastCommand (string command)
+            public void setLastSentCommand(string command)
             {
-                lastCommand = command;
-                lastChecksum = string.Format("{0:X}", TextCRC16(command));
-                addedLastCommandAt = Environment.TickCount;
+                lastSentCommand = command;
+                lastSentChecksum = string.Format("{0:X}", TextCRC16(command));
             }
 
-            public void resetLastCommand()
+            public void setLastReceivedCommand (string command)
             {
-                lastCommand = null;
+                lastReceivedCommand = command;
+                lastReceivedChecksum = string.Format("{0:X}", TextCRC16(command));
+            }
+
+            public void resetLastReceivedCommand()
+            {
+                lastReceivedCommand = null;
             }
 
             private static ushort TextCRC16(string textString)
@@ -90,7 +98,7 @@ namespace LibraryCommandProcessor
 
             public override string ToString() 
             {
-                return lastCommand != null ? lastCommand : "";
+                return lastReceivedCommand != null ? lastReceivedCommand : "";
             }
         }
 
@@ -113,6 +121,7 @@ namespace LibraryCommandProcessor
                 command = CleanCommand(command);
                 string[] words = command.Split(' ');
                 string remoteDevice = words[words.Length - 1];
+                checkDeviceStateData(remoteDevice);
 
                 if (!IsACommand(remoteDevice))
                 {
@@ -140,6 +149,9 @@ namespace LibraryCommandProcessor
                 else if (IsACommand(words[0]))
                 {
                     localNetwork.SendCommand(command, localDevice, remoteDevice);
+                    string checksum = devicesControlData[remoteDevice].LastSentChecksum;
+                    command = $"checksum {checksum}";
+                    localNetwork.SendCommand(command, localDevice, remoteDevice);
                 }
             }
             return true;
@@ -155,37 +167,55 @@ namespace LibraryCommandProcessor
                 string[] words = command.Split(' ');
                 checkDeviceStateData(remoteDevice); // makes sure there is a data class
 
-                if (words[0] != "checksum") // common command to be registed NOT triggered
+                if (IsACommand(words[0])) // common command to be registed NOT triggered
                 {
-                    devicesControlData[remoteDevice].setLastCommand(command);
+                    devicesControlData[remoteDevice].setLastReceivedCommand(command);
                 }
                 else if (words.Length == 2) // triggered commands by checksum command
                 {
-                    string checksum = devicesControlData[remoteDevice].LastChecksum;
-
-                    if (devicesControlData[remoteDevice].validCommand(words[1]))
+                    if (words[0] == "ok")
                     {
-                        string[] lastWords = devicesControlData[remoteDevice].LastCommand.Split(' ');
+                        consoleInterface.allowInterfaceRead();
+                    }
+                    else if (words[0] == "fail")
+                    {
+                        consoleInterface.WriteInterface("Command failed!\n");
+                        consoleInterface.allowInterfaceRead();
+                    }
+                    else if (words[0] == "checksum")
+                    {
+                        string checksum = devicesControlData[remoteDevice].LastReceivedChecksum;
 
-                        if (lastWords[0] == "manifesto")
+                        if (devicesControlData[remoteDevice].validCommand(words[1]))
                         {
-                            consoleInterface.WriteInterface($"{remoteDevice} Manifesto:");
-                            for (uint i = 1; i < words.Length; i++)
-                            {
-                                consoleInterface.WriteInterface($" {words[i]}");
-                            }
-                            consoleInterface.WriteInterface("\n");
-                            consoleInterface.allowInterfaceRead();
+                            RunLastReceivedCommand(remoteDevice);
+                            command = $"ok {checksum}";
                         }
-                        command = $"ok {checksum}";
+                        else
+                        {
+                            command = $"fail {checksum}";
+                        }
+                        localNetwork.SendCommand(command, localDevice, remoteDevice); // send my checksum in response to remote checksum (pair)
                     }
-                    else
-                    {
-                        command = $"fail {checksum}";
-                    }
-                    localNetwork.SendCommand(command, localDevice, remoteDevice); // send my checksum in response to remote checksum (pair)
-                    devicesControlData[remoteDevice].resetLastCommand();
+                    devicesControlData[remoteDevice].resetLastReceivedCommand(); // scrap the last received command
                 }
+            }
+        }
+
+        private static void RunLastReceivedCommand(string remoteDevice)
+        {
+            string receivedCommand = devicesControlData[remoteDevice].LastReceivedCommand;
+            string[] lastWords = devicesControlData[remoteDevice].LastReceivedCommand.Split(' ');
+
+            if (lastWords[0] == "manifesto")
+            {
+                consoleInterface.WriteInterface($"{remoteDevice} Manifesto:");
+                for (uint i = 1; i < lastWords.Length; i++)
+                {
+                    consoleInterface.WriteInterface($" {lastWords[i]}");
+                }
+                consoleInterface.WriteInterface("\n");
+                consoleInterface.allowInterfaceRead();
             }
         }
 
