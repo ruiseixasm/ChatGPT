@@ -3,6 +3,45 @@
 
 #include <iostream>
 
+class DeviceAddress
+{
+private:
+    const char* deviceName;
+    const int sizeName;
+    char *networkAdrress; // 4 bytes
+
+public:
+    DeviceAddress(char* name, int size, char* address) : deviceName(name), sizeName(size) {
+        networkAdrress = address;
+    }
+
+    ~DeviceAddress() {
+        delete[] deviceName;
+        deviceName = nullptr;
+        delete[] networkAdrress;
+        networkAdrress = nullptr;
+    }
+
+    bool sameName(char name[], int size)
+    {
+        if (size != sizeName) {
+            return false;
+        }
+        for (int i = 0; i < sizeName; i++) {
+            if (name[i] != deviceName[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+class DeviceDictionary5
+{
+
+};
+
+
 int main()
 {
     std::cout << "Hello World!\n";
