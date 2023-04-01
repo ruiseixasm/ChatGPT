@@ -45,7 +45,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryNetworkCommunication
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryCommandProcessor", "LibraryCommandProcessor\LibraryCommandProcessor.csproj", "{B2A46174-9CD0-453F-870A-40256D41B134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryConsoleInterface", "LibraryConsoleInterface\LibraryConsoleInterface.csproj", "{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryConsoleInterface", "LibraryConsoleInterface\LibraryConsoleInterface.csproj", "{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CppCodeTesting", "CppCodeTesting", "{5FD56334-ECA1-45FE-9A59-0720052299E3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SizeFixedDictionary", "SizeFixedDictionary\SizeFixedDictionary.vcxproj", "{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatAsync", "ChatAsync", "{54A9C33C-7BC3-438E-8B3D-BE1E0BBCD64C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -319,9 +325,26 @@ Global
 		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x64.Build.0 = Release|Any CPU
 		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x86.ActiveCfg = Release|Any CPU
 		{D178A5DF-22BE-45B1-BDE2-2F09E6037D66}.Release|x86.Build.0 = Release|Any CPU
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Debug|x64.ActiveCfg = Debug|x64
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Debug|x64.Build.0 = Debug|x64
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Debug|x86.ActiveCfg = Debug|Win32
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Debug|x86.Build.0 = Debug|Win32
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Release|Any CPU.ActiveCfg = Release|Win32
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Release|x64.ActiveCfg = Release|x64
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Release|x64.Build.0 = Release|x64
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Release|x86.ActiveCfg = Release|Win32
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0CACDE65-2836-4214-8A36-B31492CF5F4F} = {54A9C33C-7BC3-438E-8B3D-BE1E0BBCD64C}
+		{1D85A960-77CC-4AD6-AF76-2A876C630921} = {54A9C33C-7BC3-438E-8B3D-BE1E0BBCD64C}
+		{CAEDD82D-783B-4580-BE4C-BEC14CCA33F7} = {54A9C33C-7BC3-438E-8B3D-BE1E0BBCD64C}
+		{7F753AB9-91AB-4006-9572-CA568B188358} = {54A9C33C-7BC3-438E-8B3D-BE1E0BBCD64C}
+		{9088BD42-8BBC-4DA2-9435-5AA80CDDEE50} = {5FD56334-ECA1-45FE-9A59-0720052299E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B33EF156-F89C-4A18-9E15-045FBB883EF9}
