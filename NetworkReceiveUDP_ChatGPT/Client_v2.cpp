@@ -6,6 +6,10 @@
 // Link with ws2_32.lib
 #pragma comment(lib, "Ws2_32.lib")
 
+#define CLIENT "127.0.0.1" // 2130706433
+#define PORT 3108
+#define BUFFER_SIZE 1024
+
 int main()
 {
 
@@ -16,10 +20,7 @@ int main()
     SOCKET RecvSocket;
     struct sockaddr_in RecvAddr;
 
-    unsigned short Port = 3108;
-
-    char RecvBuf[1024];
-    int BufLen = 1024;
+    char RecvBuf[BUFFER_SIZE];
 
     struct sockaddr_in SenderAddr;
     int SenderAddrSize = sizeof(SenderAddr);
@@ -41,7 +42,7 @@ int main()
     //-----------------------------------------------
     // Bind the socket to any address and the specified port.
     RecvAddr.sin_family = AF_INET;
-    RecvAddr.sin_port = htons(Port);
+    RecvAddr.sin_port = htons(PORT);
     RecvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     iResult = bind(RecvSocket, (SOCKADDR*)&RecvAddr, sizeof(RecvAddr));
@@ -57,17 +58,17 @@ int main()
         // Call the recvfrom function to receive datagrams | AWAITS FOR THE MESSAGE
         // on the bound socket.
         wprintf(L"Receiving datagrams...\n");
-        iResult = recvfrom(RecvSocket, RecvBuf, BufLen, 0, (SOCKADDR*)&SenderAddr, &SenderAddrSize);
+        iResult = recvfrom(RecvSocket, RecvBuf, BUFFER_SIZE, 0, (SOCKADDR*)&SenderAddr, &SenderAddrSize);
         //iResult = recvfrom(RecvSocket, RecvBuf, BufLen, 0, reinterpret_cast<SOCKADDR*>(&SenderAddr), &SenderAddrSize);
         if (iResult == SOCKET_ERROR) {
             wprintf(L"recvfrom failed with error %d\n", WSAGetLastError());
         }
 
-        char RecvAddress[16];
-        int RecvAddressLen = 16;
+        static char RecvAddress[16];
+        static int RecvAddressLen = 16;
         PCSTR address_string = inet_ntop(AF_INET, &SenderAddr.sin_addr, RecvAddress, RecvAddressLen);
 
-        int lastChar = iResult < BufLen ? iResult : BufLen - 1;
+        static int lastChar = iResult < BUFFER_SIZE ? iResult : BUFFER_SIZE - 1;
         RecvBuf[lastChar] = '\0';
         std::string input(RecvBuf); // Creates a string from an array of chars! | NOT NECESSARY
         std::cout << "Received " << iResult << " bytes from " << address_string << ": " << input << std::endl;
