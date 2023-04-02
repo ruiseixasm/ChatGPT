@@ -14,7 +14,7 @@ namespace LibraryCommandProcessor
         private static string localDevice;
         private static ConsoleInterface consoleInterface = new ConsoleInterface();
         private static NetworkCommunication localNetwork = new NetworkCommunication();
-        private static Dictionary<string, deviceStateData> devicesControlData = new Dictionary<string, deviceStateData>();
+        private static Dictionary<string, RemoteDeviceData> devicesControlData = new Dictionary<string, RemoteDeviceData>();
         private static Thread clientThread = new Thread(ReadNetworkCommands);
 
         public CommandProcessor(string localDevice)
@@ -23,7 +23,7 @@ namespace LibraryCommandProcessor
             CommandProcessor.localDevice = localDevice;
         }
 
-        public class deviceStateData
+        public class RemoteDeviceData
         {
             private int addedDeviceAt;
             private string lastReceivedCommand;
@@ -36,11 +36,11 @@ namespace LibraryCommandProcessor
             public string LastSentCommand { get { return lastSentCommand; } }
             public string LastSentChecksum { get { return lastSentChecksum; } }
 
-            public deviceStateData()
+            public RemoteDeviceData()
             {
                 addedDeviceAt = Environment.TickCount;
                 lastReceivedCommand = null;
-                foreach (KeyValuePair<string, deviceStateData> deviceData in devicesControlData)
+                foreach (KeyValuePair<string, RemoteDeviceData> deviceData in devicesControlData)
                 {
                     if (deviceData.Value.outdatedDevice())
                     {
@@ -106,7 +106,7 @@ namespace LibraryCommandProcessor
         {
             if (!devicesControlData.ContainsKey(device))
             {
-                devicesControlData[device] = new deviceStateData();
+                devicesControlData[device] = new RemoteDeviceData();
                 return false;
             }
 

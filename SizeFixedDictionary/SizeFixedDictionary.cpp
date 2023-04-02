@@ -17,9 +17,7 @@ public:
 
     ~DeviceAddress() {
         delete[] deviceName;
-        deviceName = nullptr;
         delete[] networkAdrress;
-        networkAdrress = nullptr;
     }
 
     bool sameName(char name[], int size)
