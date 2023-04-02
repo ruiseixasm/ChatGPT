@@ -11,7 +11,7 @@
 
 bool OutdatedPeriod(unsigned long duration = 0) {
 
-    static unsigned long valid_duration = 0;
+    static unsigned long long valid_duration = 0;
     static auto last_time = std::chrono::system_clock::now();
 
     if (duration > 0) {
@@ -21,16 +21,22 @@ bool OutdatedPeriod(unsigned long duration = 0) {
     else {
         auto now = std::chrono::system_clock::now();
         auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_time);
-        unsigned long duration = elapsed_ms.count();
+        unsigned long long duration = elapsed_ms.count();
 
         if (duration > valid_duration) {
             return true;
         }
-        //auto actual_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
-        //auto value = actual_ms.time_since_epoch();
     }
 
     return false;
+}
+
+unsigned long long ArduinoMillis() {
+
+    auto now_system = std::chrono::system_clock::now();
+    auto now_absolute = std::chrono::time_point_cast<std::chrono::milliseconds>(now_system);
+    auto now_relative = now_absolute.time_since_epoch();
+    return now_relative.count();
 }
 
 int main() {
@@ -60,19 +66,23 @@ int main() {
         return 1;
     }
 
-    while(true) {
-        static auto last_time = std::chrono::steady_clock::now();
+    while (true) {
 
-        // Send a message to the server
-        std::string message = "Hello, server!";
-        if (sendto(sock, message.c_str(), message.length(), 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
-            std::cerr << "sendto failed with error: " << WSAGetLastError() << std::endl;
-            closesocket(sock);
-            WSACleanup();
-            return 1;
+        if (OutdatedPeriod()) {
+
+            // Send a message to the server
+            std::string message = "Hello, server!";
+            if (sendto(sock, message.c_str(), (int)message.length(), 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
+                std::cerr << "sendto failed with error: " << WSAGetLastError() << std::endl;
+                closesocket(sock);
+                WSACleanup();
+                return 1;
+            }
+
+            std::cout << "Message sent to server: " << message << std::endl;
+            OutdatedPeriod(5*1000);
+
         }
-
-        std::cout << "Message sent to server: " << message << std::endl;
 
     }
 
