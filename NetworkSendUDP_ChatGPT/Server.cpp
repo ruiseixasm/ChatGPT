@@ -1,11 +1,24 @@
 #include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h> // for inet_pton
+#include <chrono>
+#include <ratio>
 
 #pragma comment(lib, "ws2_32.lib")
 
-#define CLIENT "192.168.31.200" // 3232243656
+#define CLIENT "192.168.31.255" // BROADCAST
 #define PORT 3108
+
+unsigned long millis() {
+    auto current_time = std::chrono::steady_clock::now();
+
+    auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time);
+
+    //return std::chrono::duration_cast<std::chrono::milliseconds>(current_time).count();
+    //return std::chrono::duration_cast<std::chrono::milliseconds>(current_time).count();
+
+    return int_ms.count();
+}
 
 int main() {
     // Initialize Winsock
@@ -34,16 +47,21 @@ int main() {
         return 1;
     }
 
-    // Send a message to the server
-    std::string message = "Hello, server!";
-    if (sendto(sock, message.c_str(), message.length(), 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
-        std::cerr << "sendto failed with error: " << WSAGetLastError() << std::endl;
-        closesocket(sock);
-        WSACleanup();
-        return 1;
-    }
+    while(true) {
+        static auto last_time = std::chrono::steady_clock::now();
 
-    std::cout << "Message sent to server: " << message << std::endl;
+        // Send a message to the server
+        std::string message = "Hello, server!";
+        if (sendto(sock, message.c_str(), message.length(), 0, (struct sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
+            std::cerr << "sendto failed with error: " << WSAGetLastError() << std::endl;
+            closesocket(sock);
+            WSACleanup();
+            return 1;
+        }
+
+        std::cout << "Message sent to server: " << message << std::endl;
+
+    }
 
     // Clean up
     closesocket(sock);
