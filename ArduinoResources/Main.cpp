@@ -165,7 +165,7 @@ private:
 			}
 			word_count = totalWords;
 
-		} while (command_words == nullptr);
+		} while (word_count > 0 && command_words == nullptr);
 	}
 
 	static uint16_t TextCRC16(const char text[], const int &length)
