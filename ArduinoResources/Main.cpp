@@ -129,7 +129,6 @@ private:
 			}
 
 			bool isInnerWord = false;
-			bool pushNewWord = false;
 			int actualWord = 0;
 			int totalChars = 0;
 
@@ -150,23 +149,18 @@ private:
 				if (isInnerWord || isCommandChar(full_command[i])) {
 					totalChars++;
 					if (!isInnerWord && (i == commandSize - 1 || !isCommandChar(full_command[i + 1]))) {
-						pushNewWord = true;
-					}
-				}
-
-				if (pushNewWord) {
-					if (word_count > 0) {
-						char* new_word = new char[totalChars];
-						for (int j = 0; j < totalChars; j++) {
-							int global_char = i - (totalChars - 1) + j;
-							new_word[j] = full_command[global_char];
+						if (word_count > 0) {
+							char* new_word = new char[totalChars];
+							for (int j = 0; j < totalChars; j++) {
+								int global_char = i - (totalChars - 1) + j;
+								new_word[j] = full_command[global_char];
+							}
+							command_words[actualWord] = new_word;
+							word_sizes[actualWord] = totalChars;
 						}
-						command_words[actualWord] = new_word;
-						word_sizes[actualWord] = totalChars;
+						actualWord++;
+						totalChars = 0;
 					}
-					actualWord++;
-					totalChars = 0;
-					pushNewWord = false;
 				}
 			}
 			word_count = actualWord;
