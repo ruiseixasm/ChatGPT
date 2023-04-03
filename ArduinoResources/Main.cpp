@@ -68,6 +68,10 @@ public:
 					buffer[buffer_char] = command_words[i][j];
 					buffer_char++;
 				}
+				else {
+					buffer[buffer_char] = '\0';
+					return buffer_char + 1;
+				}
 			}
 			if (i < word_count - 1 && buffer_char < size - 1) {
 				buffer[buffer_char] = ' ';
@@ -80,7 +84,42 @@ public:
 
 private:
 
+	bool isQuotationMark(const char& command_char) {
+		// ascii as valid word char from 33 to 126
+		// 32 for [SPACE]
+		// 34 for "
+		// 39 for '
+		// 96 for `
+		return (command_char == 34 || command_char == 39 || command_char == 96);
+	}
+
+	bool isCommandChar(const char& command_char) {
+		// ascii as valid word char from 33 to 126
+		// 32 for [SPACE]
+		// 34 for "
+		// 39 for '
+		// 96 for `
+		return (command_char > 32 && command_char < 127);
+	}
+
 	void GenerateWords(const char* full_command, const int& commad_size) {
+
+		int firstChar = 0;
+		int commandSize = commad_size;
+		if (isQuotationMark(full_command[0])) {
+			if (isQuotationMark(full_command[commad_size - 1])) {
+
+				firstChar++;
+				commandSize--;
+			}
+			else if (isQuotationMark(full_command[commad_size - 2])) {
+
+				firstChar++;
+				commandSize = commad_size - 2;
+			}
+		}
+
+		int wordCount = 0;
 
 		do {
 
@@ -89,48 +128,45 @@ private:
 				word_sizes = new int[word_count];
 			}
 
-			bool isWord = false;
 			bool isInnerWord = false;
+			bool pushNewWord = false;
 			int actualWord = 0;
 			int totalChars = 0;
-			int charOffset = 0;
-			// ascii as valid word char from 33 to 126
-			// 32 for [SPACE]
-			// 34 for "
-			// 39 for '
-			// 96 for `
-			for (int i = 0; i < commad_size; i++) {
-				if (isInnerWord || full_command[i] > 32 && full_command[i] < 127) {
-					if (full_command[i] == 34 || full_command[i] == 39 || full_command[i] == 96) {
-						if (isInnerWord) {
-							isInnerWord = false;
-						}
-						else if (i > 0 && charOffset == 0) {
-							isInnerWord = true;
-						}
-						else {
-							totalChars--;
-							charOffset = -1;
-						}
+
+			for (int i = firstChar; i < commandSize; i++) {
+				// ascii as valid word char from 33 to 126
+				// 32 for [SPACE]
+				// 34 for "
+				// 39 for '
+				// 96 for `
+				if (isQuotationMark(full_command[i])) {
+					if (isInnerWord) {
+						isInnerWord = false; // for last quotation mark
 					}
-					totalChars++;
-					isWord = true;
+					else {
+						isInnerWord = true; // for first quotation mark
+					}
 				}
-				else {
-					if (isWord && totalChars > 0) {
-						if (word_count > 0) {
-							char* new_word = new char[totalChars];
-							for (int j = 0; j < totalChars; j++) {
-								int global_char = i - totalChars + j + charOffset;
-								new_word[j] = full_command[global_char];
-							}
-							command_words[actualWord] = new_word;
-							word_sizes[actualWord] = totalChars;
-						}
-						actualWord++;
-						totalChars = 0;
+				if (isInnerWord || isCommandChar(full_command[i])) {
+					totalChars++;
+					if (!isInnerWord && (i == commandSize - 1 || !isCommandChar(full_command[i + 1]))) {
+						pushNewWord = true;
 					}
-					isWord = false;
+				}
+
+				if (pushNewWord) {
+					if (word_count > 0) {
+						char* new_word = new char[totalChars];
+						for (int j = 0; j < totalChars; j++) {
+							int global_char = i - (totalChars - 1) + j;
+							new_word[j] = full_command[global_char];
+						}
+						command_words[actualWord] = new_word;
+						word_sizes[actualWord] = totalChars;
+					}
+					actualWord++;
+					totalChars = 0;
+					pushNewWord = false;
 				}
 			}
 			word_count = actualWord;
@@ -167,11 +203,46 @@ class StringUtils {
 int main(int argc, char* argv[]) {
 	std::cout << "Starting..." << std::endl << std::endl;
 
-	char big_command[] = "This is a Big command!";
+	char big_command[] = "This   is a Big   command!";
 	CommandWords firstCommand(big_command, sizeof big_command);
 
-	char another_command[] = "This is a command os another \"inner command\" to execute";
+	//                        0    1  2     3       4  5        6                     7  8
+	char another_command[] = "This is a     command os another \"inner   command\"    to execute";
 	CommandWords secondCommand(another_command, sizeof another_command);
+
+	CommandWords innerCommand(secondCommand.getCommandWord(6), secondCommand.getCommandWordSize(6));
+
+	// Fill up a buffer
+	char buffer[1024];
+
+	int total_chars = firstCommand.FillBuffer(buffer, sizeof buffer);
+	std::cout << "Assembled first phrase: ";
+	std::cout << buffer;
+	std::cout << " with ";
+	std::cout << total_chars;
+	std::cout << " char." << std::endl;
+
+	total_chars = secondCommand.FillBuffer(buffer, sizeof buffer);
+	std::cout << "Assembled second phrase: ";
+	std::cout << buffer;
+	std::cout << " with ";
+	std::cout << total_chars;
+	std::cout << " char." << std::endl;
+
+	char* innerWord = secondCommand.getCommandWord(6);
+	total_chars = secondCommand.getCommandWordSize(6); // 15
+	std::cout << "Existent inner phrase: ";
+	std::cout << innerWord;
+	std::cout << " with ";
+	std::cout << total_chars;
+	std::cout << " char." << std::endl;
+
+	total_chars = innerCommand.FillBuffer(buffer, sizeof buffer);
+	std::cout << "Assembled inner phrase: ";
+	std::cout << buffer;
+	std::cout << " with ";
+	std::cout << total_chars;
+	std::cout << " char." << std::endl;
 
 	// stack auto deleted objects!
 
