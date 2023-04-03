@@ -129,8 +129,8 @@ private:
 			}
 
 			bool isInnerWord = false;
-			int actualWord = 0;
 			int totalChars = 0;
+			int totalWords = 0;
 
 			for (int i = firstChar; i < commandSize; i++) {
 				// ascii as valid word char from 33 to 126
@@ -149,21 +149,21 @@ private:
 				if (isInnerWord || isCommandChar(full_command[i])) {
 					totalChars++;
 					if (!isInnerWord && (i == commandSize - 1 || !isCommandChar(full_command[i + 1]))) {
+						totalWords++;
 						if (word_count > 0) {
 							char* new_word = new char[totalChars];
 							for (int j = 0; j < totalChars; j++) {
 								int global_char = i - (totalChars - 1) + j;
 								new_word[j] = full_command[global_char];
 							}
-							command_words[actualWord] = new_word;
-							word_sizes[actualWord] = totalChars;
+							command_words[totalWords - 1] = new_word;
+							word_sizes[totalWords - 1] = totalChars;
 						}
-						actualWord++;
 						totalChars = 0;
 					}
 				}
 			}
-			word_count = actualWord;
+			word_count = totalWords;
 
 		} while (command_words == nullptr);
 	}
