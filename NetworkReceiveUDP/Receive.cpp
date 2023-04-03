@@ -1,6 +1,6 @@
 #include <winsock2.h>
 #include <Ws2tcpip.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <iostream>
 
 // Link with ws2_32.lib

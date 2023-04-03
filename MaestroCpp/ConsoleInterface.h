@@ -1,0 +1,9 @@
+#ifndef CONSOLE_INTERFACE_H
+#define CONSOLE_INTERFACE_H
+
+
+
+
+
+
+#endif /* CONSOLE_INTERFACE_H */

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <winsock2.h>
 #include <Ws2tcpip.h>
 
 class RemoteDevice {
@@ -122,6 +121,20 @@ public:
 
     RemoteDevice* GetDevice(const char* device_name, const int &name_size) {
 
+        for (int i = 0; i < map_size; i++) {
+
+            if (remoteDevices[i] != nullptr && remoteDevices[i]->getNameSize() == name_size) {
+                char* _device_name = remoteDevices[i]->getDeviceName();
+                for (int j = 0; j < name_size; j++) {
+                    if (device_name[j] != _device_name[j]) {
+                        break;
+                    }
+                    if (j == name_size - 1) {
+                        return remoteDevices[i];
+                    }
+                }
+            }
+        }
         return nullptr;
     }
 
@@ -136,13 +149,19 @@ int main(int argc, char* argv[]) {
     int totalDevices = 35;
 
     for (int i = 0; i < totalDevices; i++) {
-        firstName[6] = 48 + ((i+1)/10); // ascii code, 48 is equal to 0
-        firstName[7] = 48 + ((i + 1) %10);
+        firstName[6] = 48 + ((i + 1) / 10); // ascii code, 48 is equal to 0
+        firstName[7] = 48 + ((i + 1) % 10);
 
         RemoteDevice* remoteDevice = new RemoteDevice(firstName, sizeof firstName);
 
         devices_map->AddDevice(remoteDevice);
     }
+
+    firstName[6] = 48 + (1); // ascii code, 48 is equal to 0
+    firstName[7] = 48 + (5);
+
+    std::cout << "Get Device Name: ";
+    std::cout << devices_map->GetDevice(firstName, sizeof firstName)->getDeviceName() << std::endl;
 
     delete devices_map;
     return 0;
