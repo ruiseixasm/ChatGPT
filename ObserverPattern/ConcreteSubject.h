@@ -1,7 +1,7 @@
 // ConcreteSubject.h
 
-#ifndef CONCRETE_SUBJECT_H
-#define CONCRETE_SUBJECT_H
+#ifndef CONCRETESUBJECT_H
+#define CONCRETESUBJECT_H
 
 #include "Subject.h"
 
@@ -10,7 +10,7 @@ public:
     int getState() const;
     void setState(int state);
 private:
-    int state_;
+    int m_state;
 };
 
-#endif // CONCRETE_SUBJECT_H
+#endif // CONCRETESUBJECT_H

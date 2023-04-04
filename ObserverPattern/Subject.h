@@ -4,17 +4,16 @@
 #define SUBJECT_H
 
 #include <vector>
-
-class Observer; // forward declaration
+#include "Observer.h"
 
 class Subject {
 public:
-    void attach(Observer* observer);
-    void detach(Observer* observer);
-    void notify();
+    virtual ~Subject() {}
+    virtual void attach(Observer* observer);
+    virtual void detach(Observer* observer);
+    virtual void notify();
 private:
-    std::vector<Observer*> observers_;
+    std::vector<Observer*> m_observers;
 };
 
 #endif // SUBJECT_H
-

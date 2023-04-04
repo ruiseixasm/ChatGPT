@@ -3,10 +3,10 @@
 #include "ConcreteSubject.h"
 
 int ConcreteSubject::getState() const {
-	return state_;
+    return m_state;
 }
 
 void ConcreteSubject::setState(int state) {
-	state_ = state;
-	notify();
+    m_state = state;
+    notify();
 }

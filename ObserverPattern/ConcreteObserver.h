@@ -1,17 +1,19 @@
 // ConcreteObserver.h
 
-#ifndef CONCRETE_OBSERVER_H
-#define CONCRETE_OBSERVER_H
+#ifndef CONCRETEOBSERVER_H
+#define CONCRETEOBSERVER_H
 
+#include <iostream>
 #include "Observer.h"
 #include "ConcreteSubject.h"
 
 class ConcreteObserver : public Observer {
 public:
     ConcreteObserver(ConcreteSubject* subject);
-    void update();
+    void update() override;
 private:
-    ConcreteSubject* subject_;
+    ConcreteSubject* m_subject;
+    int m_observerState;
 };
 
-#endif // CONCRETE_OBSERVER_H
+#endif // CONCRETEOBSERVER_H

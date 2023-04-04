@@ -2,12 +2,11 @@
 
 #include "ConcreteObserver.h"
 
-ConcreteObserver::ConcreteObserver(ConcreteSubject* subject) {
-	subject_ = subject;
-	subject_->attach(this);
+ConcreteObserver::ConcreteObserver(ConcreteSubject* subject) : m_subject(subject) {
+    m_subject->attach(this);
 }
 
 void ConcreteObserver::update() {
-	int state = subject_->getState();
-	// do something with the updated state
+    m_observerState = m_subject->getState();
+    std::cout << "Observer state updated to: " << m_observerState << std::endl;
 }
