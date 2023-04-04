@@ -1,20 +1,12 @@
 #include "CommandData.h"
 
-CommandData::CommandData(const char* full_command, const int commad_size) { // For netwoek usage
+CommandData::CommandData(const char* full_command, const int commad_size) { // For network/console usage
 	command_words = nullptr;
 	command_checksum = TextCRC16(full_command, commad_size);
 	GenerateWords(full_command, commad_size);
-
-	std::cout << "NEW command: ";
-	std::cout << word_count;
-	std::cout << " words." << std::endl;
 }
 
 CommandData::~CommandData() {
-	std::cout << "OLD command: ";
-	std::cout << word_count;
-	std::cout << " words." << std::endl;
-
 	for (int i = 0; i < word_count - 1; i++) {
 		delete[] command_words[i];
 	}
@@ -91,8 +83,10 @@ bool CommandData::isCommandChar(const char& command_char) {
 
 void CommandData::GenerateWords(const char* full_command, const int& commad_size) {
 
+	int wordCount = 0;
 	int firstChar = 0;
 	int commandSize = commad_size;
+
 	if (isQuotationMark(full_command[0])) {
 		if (isQuotationMark(full_command[commad_size - 1])) {
 
@@ -106,8 +100,6 @@ void CommandData::GenerateWords(const char* full_command, const int& commad_size
 		}
 	}
 
-	int wordCount = 0;
-
 	do {
 
 		if (word_count > 0) {
@@ -115,9 +107,10 @@ void CommandData::GenerateWords(const char* full_command, const int& commad_size
 			word_sizes = new int[word_count];
 		}
 
+		word_count = 0;
+
 		bool isInnerWord = false;
 		int totalChars = 0;
-		int totalWords = 0;
 
 		for (int i = firstChar; i < commandSize; i++) {
 			// ascii as valid word char from 33 to 126
@@ -136,21 +129,20 @@ void CommandData::GenerateWords(const char* full_command, const int& commad_size
 			if (isInnerWord || isCommandChar(full_command[i])) {
 				totalChars++;
 				if (!isInnerWord && (i == commandSize - 1 || !isCommandChar(full_command[i + 1]))) {
-					totalWords++;
+					word_count++;
 					if (word_count > 0) {
 						char* new_word = new char[totalChars];
 						for (int j = 0; j < totalChars; j++) {
 							int global_char = i - (totalChars - 1) + j;
 							new_word[j] = full_command[global_char];
 						}
-						command_words[totalWords - 1] = new_word;
-						word_sizes[totalWords - 1] = totalChars;
+						command_words[word_count - 1] = new_word;
+						word_sizes[word_count - 1] = totalChars;
 					}
 					totalChars = 0;
 				}
 			}
 		}
-		word_count = totalWords;
 
 	} while (word_count > 0 && command_words == nullptr);
 }

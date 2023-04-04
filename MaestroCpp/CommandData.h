@@ -16,7 +16,7 @@ private:
 	uint16_t command_checksum;
 	bool validated_command = false;
 public:
-	CommandData(const char* full_command, const int commad_size); // For netwoek usage
+	CommandData(const char* full_command, const int commad_size); // For network/console usage
 	~CommandData();
 
 	int getWordCount() const;
