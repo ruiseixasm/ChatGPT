@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7d353777-e13a-474f-9818-0bc355a4321d}</ProjectGuid>
-    <RootNamespace>MaestroCpp</RootNamespace>
+    <ProjectGuid>{4f98ed09-90ef-4df5-ba3e-8b273651a2d9}</ProjectGuid>
+    <RootNamespace>ErrorCodes</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,19 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CommandData.cpp" />
-    <ClCompile Include="CommandProcessor.cpp" />
-    <ClCompile Include="ConsoleInterface.cpp" />
-    <ClCompile Include="ErrorCodes.cpp" />
-    <ClCompile Include="Maestro.cpp" />
-    <ClCompile Include="NetworkCommunication.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CommandData.h" />
-    <ClInclude Include="CommandProcessor.h" />
-    <ClInclude Include="ConsoleInterface.h" />
-    <ClInclude Include="ErrorCodes.h" />
-    <ClInclude Include="NetworkCommunication.h" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
