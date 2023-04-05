@@ -130,6 +130,8 @@
     <ClCompile Include="ConcreteObserver.cpp" />
     <ClCompile Include="ConcreteSubject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConcreteObserver.h" />
