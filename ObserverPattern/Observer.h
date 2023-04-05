@@ -3,15 +3,17 @@
 #ifndef OBSERVER_H
 #define OBSERVER_H
 
-#include "Subject.h"
+class Subject;
 
 class Observer {
 public:
-    Observer(Subject* subject);
-    virtual ~Observer();
+    virtual ~Observer() = default;
     virtual void update() = 0;
+    void attachToSubject(Subject* subject);
+    void detachFromSubject();
+
 protected:
-    Subject* subject_;
+    Subject* subject_ = nullptr;
 };
 
 #endif // OBSERVER_H

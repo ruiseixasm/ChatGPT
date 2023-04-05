@@ -4,16 +4,18 @@
 #define SUBJECT_H
 
 #include <vector>
-#include "Observer.h"
+
+class Observer;
 
 class Subject {
 public:
-    virtual ~Subject() {}
-    virtual void attach(Observer* observer);
-    virtual void detach(Observer* observer);
-    virtual void notify();
+    virtual ~Subject() = default;
+    void attach(Observer* observer);
+    void detach(Observer* observer);
+    void notify();
+
 private:
-    std::vector<Observer*> m_observers;
+    std::vector<Observer*> observers_;
 };
 
 #endif // SUBJECT_H

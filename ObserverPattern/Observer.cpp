@@ -1,10 +1,14 @@
 #include "Observer.h"
 #include "Subject.h"
 
-Observer::Observer(Subject* subject) : subject_(subject) {
+void Observer::attachToSubject(Subject* subject) {
+    subject_ = subject;
     subject_->attach(this);
 }
 
-Observer::~Observer() {
-    subject_->detach(this);
+void Observer::detachFromSubject() {
+    if (subject_) {
+        subject_->detach(this);
+        subject_ = nullptr;
+    }
 }

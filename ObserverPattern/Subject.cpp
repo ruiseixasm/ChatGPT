@@ -6,7 +6,7 @@ void Subject::attach(Observer* observer) {
 }
 
 void Subject::detach(Observer* observer) {
-    observers_.remove(observer);
+    observers_.erase(std::remove(observers_.begin(), observers_.end(), observer), observers_.end());
 }
 
 void Subject::notify() {
