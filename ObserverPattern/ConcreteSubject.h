@@ -6,11 +6,11 @@
 #include "Subject.h"
 
 class ConcreteSubject : public Subject {
+private:
+    int m_state;
 public:
     int getState() const;
     void setState(int state);
-private:
-    int m_state;
 };
 
 #endif // CONCRETESUBJECT_H

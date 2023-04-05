@@ -8,12 +8,12 @@
 #include "ConcreteSubject.h"
 
 class ConcreteObserver : public Observer {
+private:
+    ConcreteSubject* m_subject;
+    int m_totalSubjectUpdates = 0;
 public:
     ConcreteObserver(ConcreteSubject* subject);
     void update() override;
-private:
-    ConcreteSubject* m_subject;
-    int m_observerState;
 };
 
 #endif // CONCRETEOBSERVER_H
