@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IteratorPattern.cpp">
+    <ClCompile Include="IteratorPattern_original.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IteratorPattern_extra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

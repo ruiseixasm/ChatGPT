@@ -127,7 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="IteratorPattern.cpp" />
+    <ClCompile Include="IteratorPattern_extra.cpp" />
+    <ClCompile Include="IteratorPattern_original.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
